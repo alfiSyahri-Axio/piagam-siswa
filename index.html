@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Piagam - Sistem Pencapaian Siswa</title>
+<style>
+  :root {
+    --tinta: #14213d;
+    --tinta-muda: #24365e;
+    --emas: #e0a526;
+    --emas-muda: #fff4d6;
+    --latar: #f3f5f9;
+    --kartu: #ffffff;
+    --teks: #1b2333;
+    --redup: #5b667a;
+    --garis: #dde2ec;
+    --bahaya: #c62828;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --aksi: #14213d;
+    --aksi-hover: #24365e;
+    --kepala-tabel: #eef1f7;
+    --lencana-latar: #e8ecf5;
+    --lencana-teks: #14213d;
+    --emas-teks: #7a5600;
+    color-scheme: light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+    --latar: #0f1627;
+    --kartu: #18233d;
+    --teks: #e8ecf5;
+    --redup: #9fabc4;
+    --garis: #2b3a5e;
+    --emas-muda: #3b2f10;
+    --bahaya: #ff6b6b;
+    --aksi: #3d5a99;
+    --aksi-hover: #4a6bb0;
+    --kepala-tabel: #1f2c4b;
+    --lencana-latar: #27375c;
+    --lencana-teks: #dbe4f7;
+    --emas-teks: #f0c04f;
+    color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --latar: #0f1627;
+    --kartu: #18233d;
+    --teks: #e8ecf5;
+    --redup: #9fabc4;
+    --garis: #2b3a5e;
+    --emas-muda: #3b2f10;
+    --bahaya: #ff6b6b;
+    --aksi: #3d5a99;
+    --aksi-hover: #4a6bb0;
+    --kepala-tabel: #1f2c4b;
+    --lencana-latar: #27375c;
+    --lencana-teks: #dbe4f7;
+    --emas-teks: #f0c04f;
+    color-scheme: dark;
+  }
+  html {
+    scroll-padding-top: env(safe-area-inset-top, 0px); 
+  }
+  * { box-sizing: border-box; margin: 0; }
+  [hidden] { display: none !important; }
+  body { 
+    font-family: var(--sans); 
+    background: var(--latar); 
+    color: var(--teks); 
+    line-height: 1.5; 
+  }
+  button, input, select { font: inherit; }
+  :focus-visible { 
+    outline: 3px solid var(--emas); 
+    outline-offset: 2px; 
+  }
+
+  /* ---------- Watermark nama ---------- */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='170'%3E%3Ctext x='130' y='85' text-anchor='middle' font-family='Georgia,serif' font-size='22' fill='%23808080' fill-opacity='0.22' transform='rotate(-25 130 85)'%3EAlfi Syahri%3C/text%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* ---------- Halaman login ---------- */
+  .login { 
+    min-height: 100vh; 
+    display: grid; 
+    grid-template-columns: 1.1fr 1fr; 
+  }
+  .login-kiri {
+    background: var(--tinta); 
+    color: #fff; padding: 56px 48px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    gap: 40px; 
+  }
+  .merek { 
+    font-family: var(--serif); 
+    font-size: 1.4rem; 
+    letter-spacing: .02em; 
+  }
+  .login-kiri h1 {
+    font-family: var(--serif); 
+    font-weight: 700; 
+    font-size: clamp(2rem, 4vw, 3.2rem); 
+    line-height: 1.15; max-width: 14ch; 
+  }
+  .login-kiri p {
+    color: #c3cce0; 
+    max-width: 42ch; 
+    margin-top: 14px; 
+  }
+  .piagam { 
+    list-style: none; 
+    padding: 0; 
+    display: grid; 
+    gap: 10px; 
+    max-width: 420px; 
+  }
+  .piagam li { 
+    border-left: 4px solid var(--emas);
+    background: var(--tinta-muda); 
+    padding: 10px 14px; 
+    border-radius: 0 10px 10px 0; 
+    font-size: .95rem; 
+  }
+  .piagam b {
+    display: block; 
+    font-family: var(--serif); 
+    font-size: 1.05rem; 
+  }
+  .piagam span { 
+    color: #c3cce0; 
+    font-size: .85rem; 
+  }
+  .login-kanan { 
+    display: grid; 
+    place-items: center; 
+    padding: 32px 24px; 
+  }
+  .kotak { 
+    width: 100%; 
+    max-width: 380px; 
+  }
+  .kotak h2 { 
+    font-family: var(--serif); 
+    font-size: 1.7rem; 
+    margin-bottom: 4px; 
+  }
+  .kotak .sub { 
+    color: var(--redup); 
+    margin-bottom: 24px; 
+  }
+  label { 
+    display: block; 
+    font-weight: 600; 
+    font-size: .9rem; 
+    margin: 14px 0 6px; 
+  }
+  input, select { 
+    width: 100%; 
+    padding: 11px 12px; 
+    border: 1px solid var(--garis); 
+    border-radius: 8px; 
+    background: var(--kartu); 
+    color: var(--teks); 
+  }
+  input:focus, select:focus { 
+    border-color: var(--aksi); 
+  }
+  .tombol { 
+    margin-top: 22px; 
+    width: 100%; 
+    padding: 12px; 
+    border: 0; 
+    border-radius: 8px; 
+    background: var(--aksi); 
+    color: #fff; 
+    font-weight: 600; 
+    cursor: pointer; 
+  }
+  .tombol:hover { 
+    background: var(--aksi-hover); 
+  }
+  .galat { 
+    color: var(--bahaya); 
+    font-size: .9rem; 
+    min-height: 1.4em; 
+    margin-top: 12px; 
+  }
+  .akun-uji { 
+    margin-top: 22px; 
+    padding: 14px; 
+    background: var(--emas-muda); 
+    border-radius: 10px; 
+    font-size: .85rem; 
+  }
+  .akun-uji b { 
+    font-family: var(--serif); 
+    font-size: .95rem; 
+  }
+  .akun-uji code { 
+    background: var(--kartu); 
+    padding: 1px 6px; 
+    border-radius: 4px; 
+  }
+  /* ---------- Halaman utama ---------- */
+  .bar { 
+    background: var(--tinta); 
+    color: #fff; display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 16px; padding: 14px 28px; 
+    flex-wrap: wrap; 
+  }
+  .bar .pengguna {
+    display: flex; 
+    align-items: center; 
+    gap: 16px; 
+  }
+  .bar small { 
+    color: #c3cce0; 
+    display: block; 
+  }
+  .keluar { 
+    background: transparent; 
+    border: 1px solid #5d6f98; 
+    color: #fff; 
+    padding: 8px 14px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+  }
+  .keluar:hover { 
+    background: var(--tinta-muda); 
+  }
+  main { 
+    max-width: 1060px; 
+    margin: 0 auto; 
+    padding: 28px 20px 60px; 
+  }
+  main h2 { 
+    font-family: var(--serif); 
+    font-size: 1.5rem; 
+    margin-bottom: 4px; 
+  }
+  .ringkas { 
+    display: flex; 
+    flex-wrap: wrap; 
+    background: var(--kartu); 
+    border: 1px solid var(--garis); 
+    border-radius: 14px; 
+    margin: 18px 0 24px; 
+  }
+  .ringkas div { 
+    flex: 1 1 160px; 
+    padding: 18px 22px; 
+    border-right: 1px solid var(--garis); 
+  }
+  .ringkas div:last-child {
+    border-right: 0; 
+  }
+  .ringkas strong { 
+    display: block; 
+    font-family: var(--serif); 
+    font-size: 2rem; line-height: 1.1; 
+  }
+  .ringkas span { 
+    color: var(--redup); 
+    font-size: .9rem; 
+  }
+  .panel { 
+    background: var(--kartu); 
+    border: 1px solid var(--garis); 
+    border-radius: 10px; 
+    padding: 20px; 
+    margin-bottom: 24px; 
+  }
+  .panel h3 { 
+    font-family: var(--serif); 
+    font-size: 1.15rem; 
+    margin-bottom: 4px; 
+  }
+  .baris-form { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); 
+    gap: 0 14px; 
+  }
+  .panel .tombol {
+    width: auto; 
+    padding: 11px 22px; 
+  }
+  .alat { 
+    display: flex; 
+    gap: 12px; 
+    flex-wrap: wrap; 
+    margin-bottom: 14px; 
+  }
+  .alat input { 
+    flex: 2 1 240px; 
+  }
+  .alat select { 
+    flex: 1 1 160px; 
+  }
+  .tabel-bungkus { 
+    overflow-x: auto; 
+    background: var(--kartu); 
+    border: 1px solid var(--garis); 
+    border-radius: 10px; 
+  }
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    min-width: 720px; 
+  }
+  th, td { 
+    text-align: left;
+    padding: 12px 14px; 
+    border-bottom: 1px solid var(--garis); 
+    font-size: .93rem; 
+  }
+  th { 
+    background: var(--kepala-tabel); 
+    font-weight: 600; 
+  }
+  tr:last-child td { 
+    border-bottom: 0; 
+  }
+  .lencana { 
+    display: inline-block; 
+    padding: 2px 10px; 
+    border-radius: 999px; 
+    font-size: .82rem; 
+    font-weight: 600; 
+    background: var(--lencana-latar); 
+    color: var(--lencana-teks); 
+  }
+  .lencana.emas { 
+    background: var(--emas-muda); 
+    color: var(--emas-teks); 
+  }
+  .hapus { 
+    background: none; 
+    border: 0; color: var(--bahaya);
+    cursor: pointer; font-weight: 600; 
+  }
+  .kosong { 
+    padding: 28px; 
+    text-align: center; 
+    color: var(--redup); 
+  }
+
+  @media (max-width: 820px) {
+    .login { grid-template-columns: 1fr; }
+    .login-kiri { padding: 32px 24px; }
+    .piagam { display: none; }
+    .ringkas div { 
+      border-right: 0; 
+      border-bottom: 1px solid var(--garis); 
+    }
+    .ringkas div:last-child { border-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HALAMAN LOGIN ============ -->
+<section id="halaman-login" class="login">
+  <div class="login-kiri">
+    <div class="merek">Piagam</div>
+    <div>
+      <h1>Setiap prestasi siswa tercatat di sini.</h1>
+      <p>Guru mencatat lomba dan penghargaan, siswa melihat pencapaiannya sendiri.</p>
+    </div>
+    <ul class="piagam">
+      <li><b>Juara 1 Cerdas Cermat</b><span>Siti Aisyah, tingkat Provinsi</span></li>
+      <li><b>Juara 2 Olimpiade Matematika</b><span>Andi Pratama, tingkat Nasional</span></li>
+    </ul>
+  </div>
+  <div class="login-kanan">
+    <div class="kotak">
+      <h2>Masuk</h2>
+      <p class="sub">Gunakan akun yang diberikan sekolah.</p>
+      <form id="form-login" autocomplete="off">
+        <label for="username">Username</label>
+        <input id="username" required>
+        <label for="password">Password</label>
+        <input id="password" type="password" required>
+        <p id="pesan-login" class="galat" role="alert"></p>
+        <button class="tombol" type="submit">Masuk</button>
+      </form>
+      <div class="akun-uji">
+        <b>Akun percobaan</b><br>
+        Guru: <code>guru</code> / <code>guru123</code><br>
+        Siswa: <code>siswa1</code> / <code>siswa123</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HALAMAN UTAMA ============ -->
+<section id="halaman-app" hidden>
+  <header class="bar">
+    <div class="merek">Piagam</div>
+    <div class="pengguna">
+      <div><strong id="nama-user"></strong><small id="peran-user"></small></div>
+      <button class="keluar" id="tombol-keluar" type="button">Keluar</button>
+    </div>
+  </header>
+
+  <main>
+    <h2 id="judul-halaman">Daftar prestasi</h2>
+    <p id="sub-halaman" style="color:var(--redup)"></p>
+
+    <div class="ringkas">
+      <div><strong id="stat-total">0</strong><span>Total prestasi</span></div>
+      <div><strong id="stat-siswa">0</strong><span>Siswa berprestasi</span></div>
+      <div><strong id="stat-juara">0</strong><span>Juara 1</span></div>
+      <div><strong id="stat-tinggi">-</strong><span>Tingkat tertinggi</span></div>
+    </div>
+
+    <!-- Form tambah: hanya tampil untuk guru -->
+    <section id="panel-tambah" class="panel" hidden>
+      <h3>Catat prestasi baru</h3>
+      <form id="form-tambah">
+        <div class="baris-form">
+          <div><label for="f-siswa">Siswa</label><select id="f-siswa" required></select></div>
+          <div><label for="f-lomba">Nama lomba</label><input id="f-lomba" required></div>
+          <div><label for="f-tingkat">Tingkat</label>
+            <select id="f-tingkat">
+              <option>Sekolah</option><option>Kota</option><option>Provinsi</option><option>Nasional</option><option>Internasional</option>
+            </select></div>
+          <div><label for="f-peringkat">Peringkat</label>
+            <select id="f-peringkat">
+              <option>Juara 1</option><option>Juara 2</option><option>Juara 3</option><option>Harapan</option><option>Peserta</option>
+            </select></div>
+          <div><label for="f-tahun">Tahun</label><input id="f-tahun" type="number" min="2000" max="2100" required></div>
+        </div>
+        <button class="tombol" type="submit">Simpan prestasi</button>
+      </form>
+    </section>
+
+    <div class="alat">
+      <input id="cari" type="search" placeholder="Cari nama siswa atau lomba" aria-label="Cari prestasi">
+      <select id="saring" aria-label="Saring tingkat">
+        <option value="">Semua tingkat</option>
+        <option>Sekolah</option><option>Kota</option><option>Provinsi</option><option>Nasional</option><option>Internasional</option>
+      </select>
+    </div>
+
+    <div class="tabel-bungkus">
+      <table>
+        <thead>
+          <tr><th>Siswa</th><th>Kelas</th><th>Lomba</th><th>Tingkat</th><th>Peringkat</th><th>Tahun</th><th id="kolom-aksi">Aksi</th></tr>
+        </thead>
+        <tbody id="isi-tabel"></tbody>
+      </table>
+      <p id="kosong" class="kosong" hidden>Belum ada prestasi yang cocok.</p>
+    </div>
+  </main>
+</section>
+
+<script>
+  /* ---------- Data pengguna (percobaan, tanpa server) ---------- */
+  const PENGGUNA = [
+    { username: 'guru1',   password: 'guru123',  nama: 'Alfi Syahri, S.Pd.', peran: 'guru' },
+    { username: 'siswa1', password: 'siswa123', nama: 'Muhammad Alfian',    peran: 'siswa', kelas: 'XI IPA 1' },
+    { username: 'siswa2', password: 'siswa123', nama: 'Nur Alfilia',     peran: 'siswa', kelas: 'XI IPA 2' },
+    { username: 'siswa3', password: 'siswa123', nama: 'Rezky Amalia',   peran: 'siswa', kelas: 'X IPS 1' }
+  ];
+
+  const DATA_AWAL = [
+    { id: 1, username: 'siswa1', lomba: 'Olimpiade Matematika',        tingkat: 'Nasional',  peringkat: 'Juara 2', tahun: 2026 },
+    { id: 2, username: 'siswa2', lomba: 'Cerdas Cermat Empat Pilar',   tingkat: 'Provinsi',  peringkat: 'Juara 1', tahun: 2026 },
+    { id: 3, username: 'siswa3', lomba: 'Festival Seni Pelajar',       tingkat: 'Kota',      peringkat: 'Juara 3', tahun: 2025 },
+    { id: 4, username: 'siswa1', lomba: 'Kompetisi Robotik Pelajar',   tingkat: 'Provinsi',  peringkat: 'Juara 1', tahun: 2025 },
+    { id: 5, username: 'siswa2', lomba: 'Lomba Pidato Bahasa Inggris', tingkat: 'Sekolah',   peringkat: 'Juara 1', tahun: 2025 }
+  ];
+
+  const URUTAN_TINGKAT = ['Sekolah', 'Kota', 'Provinsi', 'Nasional', 'Internasional'];
+
+  /* ---------- Penyimpanan di browser ---------- */
+  function baca(kunci, cadangan) {
+    try { const v = localStorage.getItem(kunci); return v ? JSON.parse(v) : cadangan; }
+    catch (e) { return cadangan; }
+  }
+  function tulis(kunci, nilai) {
+    try { localStorage.setItem(kunci, JSON.stringify(nilai)); } catch (e) { /* abaikan */ }
+  }
+
+  let prestasi = baca('piagam_prestasi', DATA_AWAL);
+  let sesi = baca('piagam_sesi', null);
+
+  const $ = (s) => document.querySelector(s);
+  const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const cariPengguna = (u) => PENGGUNA.find((x) => x.username === u);
+
+  /* ---------- Login & logout ---------- */
+  $('#form-login').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const u = $('#username').value.trim();
+    const p = $('#password').value;
+    const ketemu = PENGGUNA.find((x) => x.username === u && x.password === p);
+    if (!ketemu) {
+      $('#pesan-login').textContent = 'Username atau password salah. Periksa lagi lalu coba masuk.';
+      return;
+    }
+    sesi = ketemu.username;
+    tulis('piagam_sesi', sesi);
+    $('#form-login').reset();
+    $('#pesan-login').textContent = '';
+    tampilkan();
+  });
+
+  $('#tombol-keluar').addEventListener('click', () => {
+    sesi = null;
+    try { localStorage.removeItem('piagam_sesi'); } catch (e) { /* abaikan */ }
+    tampilkan();
+  });
+
+  /* ---------- Tampilan ---------- */
+  function tampilkan() {
+    const user = sesi ? cariPengguna(sesi) : null;
+    $('#halaman-login').hidden = !!user;
+    $('#halaman-app').hidden = !user;
+    if (!user) return;
+
+    const guru = user.peran === 'guru';
+    $('#nama-user').textContent = user.nama;
+    $('#peran-user').textContent = guru ? 'Guru' : 'Siswa, kelas ' + user.kelas;
+    $('#judul-halaman').textContent = guru ? 'Prestasi seluruh siswa' : 'Prestasi saya';
+    $('#sub-halaman').textContent = guru
+      ? 'Catat, cari, dan kelola prestasi siswa.'
+      : 'Semua lomba dan penghargaan yang sudah kamu raih.';
+    $('#panel-tambah').hidden = !guru;
+    $('#kolom-aksi').hidden = !guru;
+    isiPilihanSiswa();
+    render();
+  }
+
+  function isiPilihanSiswa() {
+    $('#f-siswa').innerHTML = PENGGUNA.filter((x) => x.peran === 'siswa')
+      .map((x) => `<option value="${esc(x.username)}">${esc(x.nama)} (${esc(x.kelas)})</option>`).join('');
+    if (!$('#f-tahun').value) $('#f-tahun').value = new Date().getFullYear();
+  }
+
+  function render() {
+    const user = cariPengguna(sesi);
+    if (!user) return;
+    const guru = user.peran === 'guru';
+
+    /* Siswa hanya melihat prestasinya sendiri */
+    const milikku = guru ? prestasi : prestasi.filter((x) => x.username === user.username);
+
+    /* Ringkasan */
+    $('#stat-total').textContent = milikku.length;
+    $('#stat-siswa').textContent = new Set(milikku.map((x) => x.username)).size;
+    $('#stat-juara').textContent = milikku.filter((x) => x.peringkat === 'Juara 1').length;
+    const tertinggi = milikku.reduce((maks, x) => Math.max(maks, URUTAN_TINGKAT.indexOf(x.tingkat)), -1);
+    $('#stat-tinggi').textContent = tertinggi >= 0 ? URUTAN_TINGKAT[tertinggi] : '-';
+
+    /* Pencarian dan saringan */
+    const kata = $('#cari').value.trim().toLowerCase();
+    const tingkat = $('#saring').value;
+    const tampil = milikku.filter((x) => {
+      const siswa = cariPengguna(x.username);
+      const cocokKata = !kata || x.lomba.toLowerCase().includes(kata) || (siswa && siswa.nama.toLowerCase().includes(kata));
+      return cocokKata && (!tingkat || x.tingkat === tingkat);
+    }).sort((a, b) => b.tahun - a.tahun || b.id - a.id);
+
+    $('#isi-tabel').innerHTML = tampil.map((x) => {
+      const siswa = cariPengguna(x.username) || { nama: x.username, kelas: '-' };
+      const emas = x.peringkat === 'Juara 1' ? ' emas' : '';
+      return `<tr>
+        <td>${esc(siswa.nama)}</td>
+        <td>${esc(siswa.kelas)}</td>
+        <td>${esc(x.lomba)}</td>
+        <td><span class="lencana">${esc(x.tingkat)}</span></td>
+        <td><span class="lencana${emas}">${esc(x.peringkat)}</span></td>
+        <td>${esc(x.tahun)}</td>
+        ${guru ? `<td><button class="hapus" data-id="${x.id}" type="button">Hapus</button></td>` : ''}
+      </tr>`;
+    }).join('');
+    $('#kosong').hidden = tampil.length > 0;
+  }
+
+  /* ---------- Tambah & hapus (khusus guru) ---------- */
+  $('#form-tambah').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const user = cariPengguna(sesi);
+    if (!user || user.peran !== 'guru') return;
+    prestasi.push({
+      id: Date.now(),
+      username: $('#f-siswa').value,
+      lomba: $('#f-lomba').value.trim(),
+      tingkat: $('#f-tingkat').value,
+      peringkat: $('#f-peringkat').value,
+      tahun: Number($('#f-tahun').value)
+    });
+    tulis('piagam_prestasi', prestasi);
+    $('#f-lomba').value = '';
+    render();
+  });
+
+  $('#isi-tabel').addEventListener('click', (e) => {
+    const tombol = e.target.closest('.hapus');
+    const user = cariPengguna(sesi);
+    if (!tombol || !user || user.peran !== 'guru') return;
+    if (!confirm('Hapus prestasi ini?')) return;
+    prestasi = prestasi.filter((x) => String(x.id) !== tombol.dataset.id);
+    tulis('piagam_prestasi', prestasi);
+    render();
+  });
+
+  $('#cari').addEventListener('input', render);
+  $('#saring').addEventListener('change', render);
+
+  tampilkan();
+</script>
+</body>
+</html>
